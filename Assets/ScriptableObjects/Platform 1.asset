@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e06759bc0bad464a8a904c68c427f9b, type: 3}
+  m_Name: Platform 1
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 2310438701000620164, guid: 408dd8cecdfb9964c97abeda77fd7794, type: 3}
+  height: 38.248
+  spawnPoints:
+  - {fileID: 4864122600082385268, guid: 54ce7f4c3d517d14d9356c11cadd02f2, type: 3}
+  - {fileID: 1183225870748019446, guid: 6703994a190d61042a991630affc6d41, type: 3}
+  obstacles:
+  - {fileID: 1869823665887027180, guid: 21fb1f1e1ebf66f4795d40bb6489404d, type: 3}
+  - {fileID: 2878429661417456971, guid: e2f1170c65c9f4b4397a2112e46fd72d, type: 3}
+  - {fileID: 8740366771579472595, guid: e7836a86b580ffe4f8a17c36bd1e7472, type: 3}
+  - {fileID: 6722580250118804102, guid: 4141b6c47de391747a1ac90b71e4361a, type: 3}
+  level: 1

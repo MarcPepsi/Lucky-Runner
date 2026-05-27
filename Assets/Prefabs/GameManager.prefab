@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2742315548546107985}
-  - component: {fileID: 2452138108763529524}
+  - component: {fileID: 4936469138684924218}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -32,7 +32,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2452138108763529524
+--- !u!114 &4936469138684924218
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -44,8 +44,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23443c83b3809c84a925db695131dcb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  platforms:
-  - {fileID: 6170862214354060130, guid: f71fc131a75b54c499093c7b4f3945ad, type: 3}
-  - {fileID: 6170862214354060130, guid: 89a8f0916cf269b47942f3574aa62371, type: 3}
-  - {fileID: 6170862214354060130, guid: 386b9ae55c2b60f489e06c38816f4838, type: 3}
-  - {fileID: 6170862214354060130, guid: c6dba12d0f6437140a9dcea3fa9bc19a, type: 3}
+  PM: {fileID: 0}
+  platforms: []
+  rotate: {x: 0, y: 0, z: 0, w: 1}
+  basicPosition: {x: 0, y: 0, z: 0}
+  nextPosition: {x: 0, y: 0, z: 0}
