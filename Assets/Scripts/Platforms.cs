@@ -8,28 +8,32 @@ public class PlatformGenerator : MonoBehaviour
 {
     [SerializeField] PlayerMovement PM; //Variable qui stocke le composant 'PlayerMovement'
     [SerializeField] Quaternion rotate = Quaternion.identity; //Conservation de la rotation du prefab
-    [SerializeField] Vector3 nextPosition, decalage; //Position de la génération de la plateforme suivante
-    [SerializeField] GameObject basicPlatform; //Première plateforme
+    [SerializeField] Vector3 nextPosition, decalage; //Position de la gï¿½nï¿½ration de la plateforme suivante
+    [SerializeField] GameObject basicPlatform; //Premiï¿½re plateforme
     private GameObject currentPlatform, currentObstacle; 
     public Platform[] platforms; //Tableau de 'platforms'
-    private int nbr; //Nombre aléatoire
+    private int nbr; //Nombre alï¿½atoire
 
     void Start()
     {
-        //Appel de la fonction de génération de plateforme lors du lancement de la scène
+        //Appel de la fonction de gï¿½nï¿½ration de plateforme lors du lancement de la scï¿½ne
         generatePlatform(basicPlatform.transform.position, platforms, false);
     }
     private void Update()
     {
-        //Si la 'canGenerated' est vrai, il y'a génération d'une nouvelle plateforme
-        if (PM.canGenerated)
+        //Si la 'canGenerated' est vrai, il y'a gï¿½nï¿½ration d'une nouvelle plateforme
+        if (GameManager.instance.isGameOver) return;
+
+        //Genere quand le joueur est proche de la  prochaine position
+        float distance = Vector3.Distance(PM.transform.position, nextPosition);
+        if (distance < 30f )
         {
             generatePlatform(nextPosition, platforms, true);
             PM.canGenerated = false;
         }
 
     }
-    //Fonction de génération de platforme
+    //Fonction de gï¿½nï¿½ration de platforme
     public void generatePlatform(Vector3 position, Platform[] platforms, bool isRandom)
     {
         if (!isRandom)
@@ -47,18 +51,18 @@ public class PlatformGenerator : MonoBehaviour
         //Instantiation d'une plateforme
         currentPlatform = Instantiate(platforms[nbr].prefab, nextPosition, rotate);
 
-        //Appel de la fonction de génération d'obstacles
+        //Appel de la fonction de gï¿½nï¿½ration d'obstacles
         generateObstacles(platforms[nbr]);
 
-        //Destruction automatique des plateformes après quelques sécondes
+        //Destruction automatique des plateformes aprï¿½s quelques sï¿½condes
         Destroy(currentPlatform, 15f);    
 
     }
 
-    //Fontion de génération d'obstacles aléatoirement
+    //Fontion de gï¿½nï¿½ration d'obstacles alï¿½atoirement
     void generateObstacles(Platform platform)
     {
-        //Pour chaque point d'apparition, un obstacle est généré
+        //Pour chaque point d'apparition, un obstacle est gï¿½nï¿½rï¿½
         foreach (GameObject spawnPoint in platform.spawnPoints)
         {
             nbr = Random.Range(0, platform.obstacles.Length);

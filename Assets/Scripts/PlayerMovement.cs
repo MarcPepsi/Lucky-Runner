@@ -10,18 +10,19 @@ public class PlayerMovement : MonoBehaviour
     RaycastHit hit;
     public float speed = 5f; //Variable de vitesse
     public bool canGenerated = false;
-    int score = 0, side = 0; // Score du player / Variable qui sert à déterminer ou se trouve le joueur sur l'axe x
+    int score = 0, side = 0; // Score du player / Variable qui sert ï¿½ dï¿½terminer ou se trouve le joueur sur l'axe x
 
     void Start()
     {
-        //Récupération du rigidbody du player
+        //Rï¿½cupï¿½ration du rigidbody du player
         playerRB = GetComponent<Rigidbody>();
     }
 
 
     void Update()
-    {
-        //Déplacement du player sur l'axe 'z' avec une vitesse définie
+    {   
+        if(GameManager.instance.isGameOver) return;
+        //Dï¿½placement du player sur l'axe 'z' avec une vitesse dï¿½finie
         transform.Translate(Vector3.forward * speed * Time.deltaTime);
 
         // Si on appuie sur Espace et que le Raycast touche le sol
@@ -41,12 +42,12 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    //Fonction de déplacement du player sur l'axe 'x'
+    //Fonction de dï¿½placement du player sur l'axe 'x'
     void Move()
     {
         Vector3 decalage = new Vector3(2.15f, 0, 0);
 
-        //Si le joueur appui sur une touche de direction et n'est pas déjà à sur cette direction, alors il va à vers cette direction
+        //Si le joueur appui sur une touche de direction et n'est pas dï¿½jï¿½ ï¿½ sur cette direction, alors il va ï¿½ vers cette direction
 
         if (Input.GetKeyDown(KeyCode.LeftArrow) && side > -5)
         {
@@ -61,10 +62,24 @@ public class PlayerMovement : MonoBehaviour
     }
 
 
-    //Si le player entre en collision avec une plateforme, alors il y'a génération d'une nouvelle
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.tag == "Plateforme")
+    //Si le player entre en collision avec une plateforme, alors il y'a gï¿½nï¿½ration d'une nouvelle
+    private void OntriggerEnter(Collider other)
+    {   
+        Debug.Log("tag touchÃ©: " + other.tag);
+        if(other.tag == "Plateforme")
+        {
             canGenerated = true;
+        }
+    }
+
+
+    //affichage game over apres collisions
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "Obstacles")
+        {
+            GameManager.instance.GameOver();
+        }
+            
     }
 }
