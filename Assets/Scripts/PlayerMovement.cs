@@ -11,11 +11,19 @@ public class PlayerMovement : MonoBehaviour
     public float speed = 5f; //Variable de vitesse
     public bool canGenerated = false;
     int score = 0, side = 0; // Score du player / Variable qui sert � d�terminer ou se trouve le joueur sur l'axe x
+    private Quaternion rotationNormale; // On stoce deux orientations du player pour les utiliser lors des changements de position(debout/ couché)
+    private Quaternion rotationBasse;
+
+    private int coinCount = 0; // Variable pour compter les pièces collectées
+    private int jumpCount = 0; // Variable pour compter le nombre de sauts effectués
 
     void Start()
     {
         //R�cup�ration du rigidbody du player
         playerRB = GetComponent<Rigidbody>();
+
+        rotationNormale = transform.rotation;
+        rotationBasse = rotationNormale * Quaternion.Euler(90f, 0f, 0f); //On donne des valeurs à la rotation basse pour que le player soit couché
     }
 
 
@@ -23,22 +31,73 @@ public class PlayerMovement : MonoBehaviour
     {   
         if(GameManager.instance.isGameOver) return;
         //D�placement du player sur l'axe 'z' avec une vitesse d�finie
-        transform.Translate(Vector3.forward * speed * Time.deltaTime);
+        transform.Translate(Vector3.forward * speed * Time.deltaTime, Space.World); // Deplacement en coordonnées monde pour etre independant de l'orientation
 
         // Si on appuie sur Espace et que le Raycast touche le sol
         if (Input.GetKeyDown(KeyCode.Space))
             jump();
         //Appel de la fonction 'Move()'
         Move();
+
+        if (Input.GetKey(KeyCode.DownArrow))
+        {
+            transform.rotation = rotationBasse;
+        }
+        else
+        {
+            transform.rotation = rotationNormale;
+        }
     }
 
     //Fonction de saut du player
-    void jump()
+   void jump()
     {
-        // Si le Raycast touche le sol on applique le saut en fonction de jumpForce
-        if (Physics.Raycast(transform.position, Vector3.down * playerHeight / 2, out hit,  2.2f))
+        bool isGrounded =
+            Physics.Raycast(
+                transform.position,
+                Vector3.down,
+                out hit,
+                2.2f
+            );
+
+        if (isGrounded)
         {
-            playerRB.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            jumpCount = 0;
+        }
+
+        // Premier saut gratuit
+        if (jumpCount == 0)
+        {
+            playerRB.velocity = new Vector3(
+                playerRB.velocity.x,
+                0,
+                playerRB.velocity.z
+            );
+
+            playerRB.AddForce(
+                Vector3.up * jumpForce,
+                ForceMode.Impulse
+            );
+
+            jumpCount++;
+        }
+        // Deuxième saut payant
+        else if (jumpCount == 1 && coinCount >= 10)
+        {
+            SetCoinCount(-10);
+
+            playerRB.velocity = new Vector3(
+                playerRB.velocity.x,
+                0,
+                playerRB.velocity.z
+            );
+
+            playerRB.AddForce(
+                Vector3.up * jumpForce,
+                ForceMode.Impulse
+            );
+
+            jumpCount++;
         }
     }
 
@@ -63,7 +122,7 @@ public class PlayerMovement : MonoBehaviour
 
 
     //Si le player entre en collision avec une plateforme, alors il y'a g�n�ration d'une nouvelle
-    private void OntriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other)
     {   
         Debug.Log("tag touché: " + other.tag);
         if(other.tag == "Plateforme")
@@ -76,10 +135,39 @@ public class PlayerMovement : MonoBehaviour
     //affichage game over apres collisions
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.tag == "Obstacles")
+        if (!collision.gameObject.CompareTag("Obstacles"))
+            return;
+
+        ContactPoint contact = collision.contacts[0]; //Récupération du point de contact de la collision pour déterminer la direction de l'impact
+
+        float dot = Vector3.Dot(contact.normal, Vector3.up);
+
+        if (dot > 0.8f)
+        {
+            return; // Si le point de contact est principalement orienté vers le haut, il n'y a pas de game over.
+        }
+        if (coinCount >= 100)
+        {
+            SetCoinCount(-100);
+            return; // Si le joueur a au moins 100 pièces, il peut survivre à la collision.
+        }
+        else
         {
             GameManager.instance.GameOver();
         }
-            
+        GameManager.instance.GameOver();
     }
+
+    public void SetCoinCount(int count)
+    {
+        coinCount += count;
+        Debug.Log("Pièces collectées : " + coinCount);
+    }
+
+    public int GetCoinCount()
+    {
+        return coinCount;
+    }
+
+    
 }

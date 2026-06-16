@@ -15,11 +15,15 @@ public class GameManager : MonoBehaviour
     public GameObject gameOverPanel;
     //reference au panel PM
     public PlayerMovement PM;
+    [SerializeField]private TextMeshProUGUI coinText; // Reference à l'élément TextMeshPro pour afficher le nombre de pièces collectées
+    public PlayerMovement player; 
+    // Reference au script PlayerMovement pour accéder au nombre de pièces collectées
 
     //score de depart
     private float score = 0;
     //vérifie si le jeu est terminé
     public bool isGameOver = false;
+
 
     void Awake()
     {
@@ -37,6 +41,10 @@ public class GameManager : MonoBehaviour
 
             //augmentation de la vitesse avec le temps
             PM.speed += Time.deltaTime * 0.1f;
+
+            int coinCount = player.GetCoinCount(); // Récupère le nombre de pièces collectées depuis le script PlayerMovement
+            coinText.text = "LuckyCoins: " + coinCount.ToString(); // Met à jour le texte avec le nombre de pièces collectées
+
         }
     }
 

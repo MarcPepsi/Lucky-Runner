@@ -10,6 +10,8 @@ public class PlatformGenerator : MonoBehaviour
     [SerializeField] Quaternion rotate = Quaternion.identity; //Conservation de la rotation du prefab
     [SerializeField] Vector3 nextPosition, decalage; //Position de la g�n�ration de la plateforme suivante
     [SerializeField] GameObject basicPlatform; //Premi�re plateforme
+    [SerializeField] GameObject coinPrefab; //Prefab de la piece
+    [SerializeField]float laneWidth = 2.15f;
     private GameObject currentPlatform, currentObstacle; 
     public Platform[] platforms; //Tableau de 'platforms'
     private int nbr; //Nombre al�atoire
@@ -50,6 +52,7 @@ public class PlatformGenerator : MonoBehaviour
 
         //Instantiation d'une plateforme
         currentPlatform = Instantiate(platforms[nbr].prefab, nextPosition, rotate);
+        GenerateCoins();
 
         //Appel de la fonction de g�n�ration d'obstacles
         generateObstacles(platforms[nbr]);
@@ -68,6 +71,40 @@ public class PlatformGenerator : MonoBehaviour
             nbr = Random.Range(0, platform.obstacles.Length);
             currentObstacle = Instantiate(platform.obstacles[nbr], spawnPoint.transform.position + currentPlatform.transform.position + decalage, rotate);
             currentObstacle.transform.SetParent(currentPlatform.transform);
+        }
+    }
+
+    void GenerateCoins()
+    {
+        
+        int lane = Random.Range(0, 3);
+
+        int coinNumber = Random.Range(3, 9);
+
+        float laneX = (lane - 1) * laneWidth;
+
+        for(int i = 0; i < coinNumber; i++)
+        {
+            Vector3 pos =
+                currentPlatform.transform.position;
+
+            pos += new Vector3(
+                laneX,
+                1f,
+                i * 2f
+            );
+
+            RaycastHit hit;
+
+            if(Physics.Raycast (pos + Vector3.up * 10f, Vector3.down, out hit, 20f))
+            {
+                pos.y = hit.point.y + 1.5f;
+            }
+
+            GameObject coin =
+                Instantiate(coinPrefab, pos, coinPrefab.transform.rotation);
+
+            coin.transform.SetParent(currentPlatform.transform);
         }
     }
 
